@@ -1,0 +1,192 @@
+# Dynamic Configuration for High-Throughput Temporal Setup
+# This file optimizes Temporal for 20k state transitions/second
+
+# History Service Optimizations
+history.persistenceMaxQPS:
+  - value: 15000
+    constraints: {}
+
+history.persistenceGlobalMaxQPS:
+  - value: 50000
+    constraints: {}
+
+history.historyMgrNumConns:
+  - value: 50
+    constraints: {}
+
+history.executionMgrNumConns:
+  - value: 50
+    constraints: {}
+
+# Increase history cache size for better performance
+history.cacheMaxSize:
+  - value: 2000000
+    constraints: {}
+
+history.historyCacheMaxSize:
+  - value: 2000000
+    constraints: {}
+
+# Matching Service Optimizations
+matching.persistenceMaxQPS:
+  - value: 10000
+    constraints: {}
+
+matching.persistenceGlobalMaxQPS:
+  - value: 30000
+    constraints: {}
+
+matching.numTaskqueueReadPartitions:
+  - value: 10
+    constraints: {}
+
+matching.numTaskqueueWritePartitions:
+  - value: 10
+    constraints: {}
+
+matching.longPollExpirationInterval:
+  - value: "20s"
+    constraints: {}
+
+matching.enableTaskQueueCache:
+  - value: true
+    constraints: {}
+
+# Frontend Service Optimizations
+frontend.persistenceMaxQPS:
+  - value: 10000
+    constraints: {}
+
+frontend.persistenceGlobalMaxQPS:
+  - value: 30000
+    constraints: {}
+
+frontend.historyMaxQPS:
+  - value: 15000
+    constraints: {}
+
+# Rate limiting - set high for load testing
+frontend.rps:
+  - value: 50000
+    constraints: {}
+
+frontend.globalRPS:
+  - value: 100000
+    constraints: {}
+
+# Worker Service Optimizations
+worker.persistenceMaxQPS:
+  - value: 5000
+    constraints: {}
+
+# System-wide Optimizations
+system.advancedVisibilityWritingMode:
+  - value: "dual"
+    constraints: {}
+
+system.enableReadFromSecondaryAdvancedVisibility:
+  - value: true
+    constraints: {}
+
+# Task processing optimizations
+history.timerProcessorMaxPollRPS:
+  - value: 100
+    constraints: {}
+
+history.timerProcessorUpdateAckInterval:
+  - value: "5s"
+    constraints: {}
+
+history.transferProcessorMaxPollRPS:
+  - value: 100
+    constraints: {}
+
+history.transferProcessorUpdateAckInterval:
+  - value: "5s"
+    constraints: {}
+
+# Workflow execution optimizations
+limit.maxIDLength:
+  - value: 1000
+    constraints: {}
+
+limit.workflowIDMaxLength:
+  - value: 1000
+    constraints: {}
+
+# Replication settings (disabled for single cluster)
+history.replicationTaskProcessorMaxQPS:
+  - value: 0
+    constraints: {}
+
+# History host level limits
+history.historyHostLevel.persistenceMaxQPS:
+  - value: 5000
+    constraints: {}
+
+# Transfer queue settings
+history.transferProcessorCompleteTransferInterval:
+  - value: "10s"
+    constraints: {}
+
+# Timer queue settings
+history.timerProcessorCompleteTimerInterval:
+  - value: "10s"
+    constraints: {}
+
+# Activity retry settings
+limit.activityMaxRetries:
+  - value: 100
+    constraints: {}
+
+# Workflow task timeout
+limit.workflowTaskTimeout:
+  - value: "30s"
+    constraints: {}
+
+# Max concurrent workflow task execution size
+limit.workflowTaskExecutionSize:
+  - value: 2000000
+    constraints: {}
+
+# Namespace cache refresh
+frontend.namespaceRefreshInterval:
+  - value: "10s"
+    constraints: {}
+
+# Enable metrics
+system.enableGlobalNamespace:
+  - value: false
+    constraints: {}
+
+# Archival (disabled for performance)
+system.enableArchival:
+  - value: false
+    constraints: {}
+
+# Visibility settings
+frontend.enableServerVersionCheck:
+  - value: false
+    constraints: {}
+
+# Memory management
+history.memoryLimit:
+  - value: "10GB"
+    constraints: {}
+
+matching.memoryLimit:
+  - value: "6GB"
+    constraints: {}
+
+# Connection pool sizes
+history.persistenceConnectionPoolSize:
+  - value: 100
+    constraints: {}
+
+matching.persistenceConnectionPoolSize:
+  - value: 50
+    constraints: {}
+
+frontend.persistenceConnectionPoolSize:
+  - value: 50
+    constraints: {}
