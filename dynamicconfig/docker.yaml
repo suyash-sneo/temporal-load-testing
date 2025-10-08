@@ -1,0 +1,225 @@
+# dynamicconfig/docker.yaml
+# High-throughput configuration for Temporal
+
+# History Service Tuning
+history.persistenceMaxQPS:
+  - value: 10000
+    constraints: {}
+
+history.persistenceGlobalMaxQPS:
+  - value: 50000
+    constraints: {}
+
+history.historyMgrNumConns:
+  - value: 50
+    constraints: {}
+
+history.executionMgrNumConns:
+  - value: 50
+    constraints: {}
+
+# Increase history cache size for better performance
+history.historyCacheMaxSize:
+  - value: 2000000
+    constraints: {}
+
+history.historyCacheInitialSize:
+  - value: 1000000
+    constraints: {}
+
+# More aggressive transfer queue processing
+history.transferProcessorMaxPollRPS:
+  - value: 10000
+    constraints: {}
+
+history.transferProcessorMaxPollHostRPS:
+  - value: 5000
+    constraints: {}
+
+history.transferProcessorSchedulerWorkerCount:
+  - value: 1000
+    constraints: {}
+
+history.transferProcessorSchedulerQueueSize:
+  - value: 100000
+    constraints: {}
+
+# Timer queue processing
+history.timerProcessorMaxPollRPS:
+  - value: 5000
+    constraints: {}
+
+history.timerProcessorMaxPollHostRPS:
+  - value: 2500
+    constraints: {}
+
+history.timerProcessorSchedulerWorkerCount:
+  - value: 500
+    constraints: {}
+
+# Workflow execution parameters
+limit.maxIDLength:
+  - value: 1000
+    constraints: {}
+
+limit.blobSizeLimitError:
+  - value: 2097152
+    constraints: {}
+
+limit.blobSizeLimitWarn:
+  - value: 524288
+    constraints: {}
+
+# Matching Service Tuning
+matching.numTaskqueueReadPartitions:
+  - value: 10
+    constraints: {}
+
+matching.numTaskqueueWritePartitions:
+  - value: 10
+    constraints: {}
+
+matching.persistenceMaxQPS:
+  - value: 10000
+    constraints: {}
+
+matching.persistenceGlobalMaxQPS:
+  - value: 30000
+    constraints: {}
+
+# Increase task dispatch rate
+matching.longPollExpirationInterval:
+  - value: "60s"
+    constraints: {}
+
+matching.getTasksBatchSize:
+  - value: 1000
+    constraints: {}
+
+# Frontend Service Tuning
+frontend.persistenceMaxQPS:
+  - value: 10000
+    constraints: {}
+
+frontend.persistenceGlobalMaxQPS:
+  - value: 40000
+    constraints: {}
+
+frontend.rps:
+  - value: 20000
+    constraints: {}
+
+frontend.namespaceRPS:
+  - value: 10000
+    constraints: {}
+
+# Increase default retention
+system.defaultWorkflowRetentionTTL:
+  - value: "24h"
+    constraints: {}
+
+# Connection pooling
+system.numHistoryShards:
+  - value: 1024
+    constraints: {}
+
+# Enable aggressive namespace caching
+frontend.enableNamespaceNotActiveForwarding:
+  - value: true
+    constraints: {}
+
+# Worker service tuning
+worker.replicationTaskFetcherParallelism:
+  - value: 10
+    constraints: {}
+
+worker.replicationTaskProcessorHostQPS:
+  - value: 2000
+    constraints: {}
+
+# Visibility tuning (Cassandra-based)
+visibility.persistenceMaxQPS:
+  - value: 5000
+    constraints: {}
+
+visibility.ESProcessorNumOfWorkers:
+  - value: 4
+    constraints: {}
+
+# Archival (disabled for performance)
+system.enableArchival:
+  - value: false
+    constraints: {}
+
+# Disable advanced visibility features not needed for load test
+system.advancedVisibilityWritingMode:
+  - value: "off"
+    constraints: {}
+
+# Increase concurrent task processing
+history.historyServiceTaskProcessorHostQPS:
+  - value: 5000
+    constraints: {}
+
+# Memory optimizations - cache more in memory
+history.historyCountLimitError:
+  - value: 512000
+    constraints: {}
+
+history.historyCountLimitWarn:
+  - value: 102400
+    constraints: {}
+
+# Replication settings (disable if not needed)
+history.replicationTaskFetcherParallelism:
+  - value: 1
+    constraints: {}
+
+# ShardController optimization
+history.shardControllerMaxRetryCount:
+  - value: 100
+    constraints: {}
+
+# Workflow task timeouts
+frontend.defaultWorkflowTaskTimeout:
+  - value: "10s"
+    constraints: {}
+
+# Keep alive intervals
+frontend.keepAliveMinTime:
+  - value: "10s"
+    constraints: {}
+
+frontend.keepAliveMaxTime:
+  - value: "300s"
+    constraints: {}
+
+# Rate limiting - set very high for load testing
+frontend.globalNamespaceRPS:
+  - value: 50000
+    constraints: {}
+
+# Disable rate limiting for load testing
+system.enableRateLimiting:
+  - value: false
+    constraints: {}
+
+# Increase workflow execution timeouts
+frontend.defaultWorkflowExecutionTimeout:
+  - value: "600s"
+    constraints: {}
+
+# Batch operations
+frontend.maxConcurrentBatchOperation:
+  - value: 100
+    constraints: {}
+
+# Namespace cache refresh
+system.namespaceRefreshInterval:
+  - value: "10s"
+    constraints: {}
+
+# History replication
+history.replicationTaskProcessorHostQPS:
+  - value: 5000
+    constraints: {}

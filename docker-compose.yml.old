@@ -1,0 +1,388 @@
+version: '3.8'
+
+services:
+  # Cassandra - Primary datastore
+  cassandra:
+    image: cassandra:4.1
+    container_name: temporal-cassandra
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=temporal-cluster
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - MAX_HEAP_SIZE=16G
+      - HEAP_NEWSIZE=4G
+      - CASSANDRA_NUM_TOKENS=256
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+    networks:
+      - temporal-network
+    deploy:
+      resources:
+        limits:
+          cpus: '8'
+          memory: 20G
+        reservations:
+          cpus: '6'
+          memory: 18G
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'describe cluster'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Temporal Admin Tools (for setup)
+  temporal-admin-tools:
+    image: temporalio/admin-tools:1.24.2
+    container_name: temporal-admin-tools
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    environment:
+      - CASSANDRA_SEEDS=cassandra
+      - CASSANDRA_PORT=9042
+      - KEYSPACE=temporal
+      - VISIBILITY_KEYSPACE=temporal_visibility
+    networks:
+      - temporal-network
+    stdin_open: true
+    tty: true
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        # Wait for Cassandra to be ready
+        sleep 30
+        
+        # Setup Cassandra schema
+        temporal-cassandra-tool --ep cassandra create -k temporal --rf 1
+        temporal-cassandra-tool --ep cassandra -k temporal setup-schema -v 0.0
+        temporal-cassandra-tool --ep cassandra -k temporal update-schema -d /etc/temporal/schema/cassandra/temporal/versioned
+        
+        # Setup visibility schema
+        temporal-cassandra-tool --ep cassandra create -k temporal_visibility --rf 1
+        temporal-cassandra-tool --ep cassandra -k temporal_visibility setup-schema -v 0.0
+        temporal-cassandra-tool --ep cassandra -k temporal_visibility update-schema -d /etc/temporal/schema/cassandra/visibility/versioned
+        
+        echo "Cassandra setup complete"
+        tail -f /dev/null
+
+  # Frontend Service - Handles gRPC API requests
+  temporal-frontend:
+    image: temporalio/server:1.24.2
+    container_name: temporal-frontend
+    depends_on:
+      - cassandra
+      - temporal-admin-tools
+    environment:
+      - DB=cassandra
+      - CASSANDRA_SEEDS=cassandra
+      - CASSANDRA_PORT=9042
+      - KEYSPACE=temporal
+      - VISIBILITY_KEYSPACE=temporal_visibility
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
+      - SERVICES=frontend
+      - NUM_HISTORY_SHARDS=1024
+      - BIND_ON_IP=0.0.0.0
+      - PROMETHEUS_ENDPOINT=0.0.0.0:9090
+      - TEMPORAL_BROADCAST_ADDRESS=temporal-frontend
+    ports:
+      - "7233:7233"
+      - "9091:9090"
+    networks:
+      - temporal-network
+    volumes:
+      - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '3'
+          memory: 6G
+    restart: unless-stopped
+
+  # History Service - Manages workflow state transitions (SCALED FOR THROUGHPUT)
+  temporal-history-1:
+    image: temporalio/server:1.24.2
+    container_name: temporal-history-1
+    depends_on:
+      - cassandra
+      - temporal-admin-tools
+    environment:
+      - DB=cassandra
+      - CASSANDRA_SEEDS=cassandra
+      - CASSANDRA_PORT=9042
+      - KEYSPACE=temporal
+      - VISIBILITY_KEYSPACE=temporal_visibility
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
+      - SERVICES=history
+      - NUM_HISTORY_SHARDS=1024
+      - BIND_ON_IP=0.0.0.0
+      - PROMETHEUS_ENDPOINT=0.0.0.0:9090
+      - TEMPORAL_BROADCAST_ADDRESS=temporal-history-1
+    ports:
+      - "9092:9090"
+    networks:
+      - temporal-network
+    volumes:
+      - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+    deploy:
+      resources:
+        limits:
+          cpus: '10'
+          memory: 20G
+        reservations:
+          cpus: '8'
+          memory: 18G
+    restart: unless-stopped
+
+  temporal-history-2:
+    image: temporalio/server:1.24.2
+    container_name: temporal-history-2
+    depends_on:
+      - cassandra
+      - temporal-admin-tools
+    environment:
+      - DB=cassandra
+      - CASSANDRA_SEEDS=cassandra
+      - CASSANDRA_PORT=9042
+      - KEYSPACE=temporal
+      - VISIBILITY_KEYSPACE=temporal_visibility
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
+      - SERVICES=history
+      - NUM_HISTORY_SHARDS=1024
+      - BIND_ON_IP=0.0.0.0
+      - PROMETHEUS_ENDPOINT=0.0.0.0:9090
+      - TEMPORAL_BROADCAST_ADDRESS=temporal-history-2
+    ports:
+      - "9093:9090"
+    networks:
+      - temporal-network
+    volumes:
+      - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+    deploy:
+      resources:
+        limits:
+          cpus: '10'
+          memory: 20G
+        reservations:
+          cpus: '8'
+          memory: 18G
+    restart: unless-stopped
+
+  temporal-history-3:
+    image: temporalio/server:1.24.2
+    container_name: temporal-history-3
+    depends_on:
+      - cassandra
+      - temporal-admin-tools
+    environment:
+      - DB=cassandra
+      - CASSANDRA_SEEDS=cassandra
+      - CASSANDRA_PORT=9042
+      - KEYSPACE=temporal
+      - VISIBILITY_KEYSPACE=temporal_visibility
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
+      - SERVICES=history
+      - NUM_HISTORY_SHARDS=1024
+      - BIND_ON_IP=0.0.0.0
+      - PROMETHEUS_ENDPOINT=0.0.0.0:9090
+      - TEMPORAL_BROADCAST_ADDRESS=temporal-history-3
+    ports:
+      - "9094:9090"
+    networks:
+      - temporal-network
+    volumes:
+      - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+    deploy:
+      resources:
+        limits:
+          cpus: '10'
+          memory: 20G
+        reservations:
+          cpus: '8'
+          memory: 18G
+    restart: unless-stopped
+
+  # Matching Service - Task queue management (SCALED FOR THROUGHPUT)
+  temporal-matching-1:
+    image: temporalio/server:1.24.2
+    container_name: temporal-matching-1
+    depends_on:
+      - cassandra
+      - temporal-admin-tools
+    environment:
+      - DB=cassandra
+      - CASSANDRA_SEEDS=cassandra
+      - CASSANDRA_PORT=9042
+      - KEYSPACE=temporal
+      - VISIBILITY_KEYSPACE=temporal_visibility
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
+      - SERVICES=matching
+      - NUM_HISTORY_SHARDS=1024
+      - BIND_ON_IP=0.0.0.0
+      - PROMETHEUS_ENDPOINT=0.0.0.0:9090
+      - TEMPORAL_BROADCAST_ADDRESS=temporal-matching-1
+    ports:
+      - "9095:9090"
+    networks:
+      - temporal-network
+    volumes:
+      - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+    deploy:
+      resources:
+        limits:
+          cpus: '6'
+          memory: 12G
+        reservations:
+          cpus: '4'
+          memory: 10G
+    restart: unless-stopped
+
+  temporal-matching-2:
+    image: temporalio/server:1.24.2
+    container_name: temporal-matching-2
+    depends_on:
+      - cassandra
+      - temporal-admin-tools
+    environment:
+      - DB=cassandra
+      - CASSANDRA_SEEDS=cassandra
+      - CASSANDRA_PORT=9042
+      - KEYSPACE=temporal
+      - VISIBILITY_KEYSPACE=temporal_visibility
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
+      - SERVICES=matching
+      - NUM_HISTORY_SHARDS=1024
+      - BIND_ON_IP=0.0.0.0
+      - PROMETHEUS_ENDPOINT=0.0.0.0:9090
+      - TEMPORAL_BROADCAST_ADDRESS=temporal-matching-2
+    ports:
+      - "9096:9090"
+    networks:
+      - temporal-network
+    volumes:
+      - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+    deploy:
+      resources:
+        limits:
+          cpus: '6'
+          memory: 12G
+        reservations:
+          cpus: '4'
+          memory: 10G
+    restart: unless-stopped
+
+  # Worker Service - Internal background processing
+  temporal-worker:
+    image: temporalio/server:1.24.2
+    container_name: temporal-worker
+    depends_on:
+      - cassandra
+      - temporal-admin-tools
+    environment:
+      - DB=cassandra
+      - CASSANDRA_SEEDS=cassandra
+      - CASSANDRA_PORT=9042
+      - KEYSPACE=temporal
+      - VISIBILITY_KEYSPACE=temporal_visibility
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
+      - SERVICES=worker
+      - NUM_HISTORY_SHARDS=1024
+      - BIND_ON_IP=0.0.0.0
+      - PROMETHEUS_ENDPOINT=0.0.0.0:9090
+      - TEMPORAL_BROADCAST_ADDRESS=temporal-worker
+    ports:
+      - "9097:9090"
+    networks:
+      - temporal-network
+    volumes:
+      - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 3G
+    restart: unless-stopped
+
+  # Temporal Web UI
+  temporal-ui:
+    image: temporalio/ui:2.26.2
+    container_name: temporal-ui
+    depends_on:
+      - temporal-frontend
+    environment:
+      - TEMPORAL_ADDRESS=temporal-frontend:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:8080
+    ports:
+      - "8080:8080"
+    networks:
+      - temporal-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  # Prometheus - Metrics collection
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: temporal-prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    networks:
+      - temporal-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+    restart: unless-stopped
+
+  # Grafana - Metrics visualization
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: temporal-grafana
+    depends_on:
+      - prometheus
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana-data:/var/lib/grafana
+    networks:
+      - temporal-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+    restart: unless-stopped
+
+networks:
+  temporal-network:
+    driver: bridge
+
+volumes:
+  cassandra-data:
+  prometheus-data:
+  grafana-data:
