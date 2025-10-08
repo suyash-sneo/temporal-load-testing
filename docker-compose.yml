@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # Cassandra - Primary datastore
   cassandra:
-    image: cassandra:4.1
+    image: cassandra:3.11
     container_name: temporal-cassandra
     ports:
       - "9042:9042"
