@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # Cassandra - Primary persistence layer
   cassandra:
-    image: cassandra:4.1.3
+    image: cassandra:4.1.5
     container_name: temporal-cassandra
     ports:
       - "9042:9042"
@@ -35,7 +35,7 @@ services:
 
   # Elasticsearch - Visibility store
   elasticsearch:
-    image: elasticsearch:8.11.3
+    image: elasticsearch:7.17.23
     container_name: temporal-elasticsearch
     ports:
       - "9200:9200"
@@ -70,7 +70,7 @@ services:
 
   # Temporal Auto-Setup (for schema setup)
   temporal-auto-setup:
-    image: temporalio/auto-setup:1.24.2
+    image: temporalio/auto-setup:1.26.3
     container_name: temporal-auto-setup
     depends_on:
       cassandra:
@@ -88,7 +88,7 @@ services:
       - SKIP_DEFAULT_NAMESPACE_CREATION=false
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
-      - ES_VERSION=v8
+      - ES_VERSION=v7
       - ES_SCHEME=http
       - ES_VIS_INDEX=temporal_visibility_v1_dev
       - NUM_HISTORY_SHARDS=4096
