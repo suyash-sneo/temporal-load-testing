@@ -68,32 +68,28 @@ services:
     networks:
       - temporal-network
 
-  # Temporal Admin Tools (for schema setup)
-  temporal-admin-tools:
-    image: temporalio/admin-tools:1.24.2
-    container_name: temporal-admin-tools
+  # Temporal Auto-Setup (for schema setup)
+  temporal-auto-setup:
+    image: temporalio/auto-setup:1.24.2
+    container_name: temporal-auto-setup
     depends_on:
       cassandra:
         condition: service_healthy
       elasticsearch:
         condition: service_healthy
     environment:
+      - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
-      - CASSANDRA_KEYSPACE=temporal
+      - KEYSPACE=temporal
+      - VISIBILITY_KEYSPACE=temporal_visibility
       - CASSANDRA_REPLICATION_FACTOR=1
-      - TEMPORAL_CLI_ADDRESS=temporal-frontend:7233
-    command: >
-      sh -c "
-        sleep 30 &&
-        temporal-cassandra-tool --endpoints cassandra create -k temporal --replication-factor 1 &&
-        temporal-cassandra-tool --endpoints cassandra -k temporal setup-schema -v 0.0 &&
-        temporal-cassandra-tool --endpoints cassandra -k temporal update-schema -d /etc/temporal/schema/cassandra/temporal/versioned &&
-        temporal-cassandra-tool --endpoints cassandra create -k temporal_visibility --replication-factor 1 &&
-        temporal-cassandra-tool --endpoints cassandra -k temporal_visibility setup-schema -v 0.0 &&
-        temporal-cassandra-tool --endpoints cassandra -k temporal_visibility update-schema -d /etc/temporal/schema/cassandra/visibility/versioned &&
-        sleep infinity
-      "
+      - SKIP_SCHEMA_SETUP=false
+      - SKIP_DEFAULT_NAMESPACE_CREATION=false
+      - ES_SEEDS=elasticsearch
+      - ES_PORT=9200
+      - ES_VERSION=v8
+      - NUM_HISTORY_SHARDS=4096
     networks:
       - temporal-network
 
@@ -102,8 +98,8 @@ services:
     image: temporalio/server:1.24.2
     container_name: temporal-frontend
     depends_on:
-      temporal-admin-tools:
-        condition: service_started
+      temporal-auto-setup:
+        condition: service_completed_successfully
     ports:
       - "7233:7233"
       - "7234:7234"
@@ -111,6 +107,7 @@ services:
       - SERVICES=frontend
       - LOG_LEVEL=info
       - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
@@ -132,24 +129,25 @@ services:
           cpus: '3'
           memory: 6G
     healthcheck:
-      test: ["CMD", "tctl", "--address", "temporal-frontend:7233", "cluster", "health"]
+      test: ["CMD", "sh", "-c", "nc -z localhost 7233 || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 20
     networks:
       - temporal-network
 
-  # History Service - Core workflow execution (scaled to 6 instances)
+  # History Service - Core workflow execution (scaled to 4 instances)
   temporal-history-1:
     image: temporalio/server:1.24.2
     container_name: temporal-history-1
     depends_on:
-      temporal-admin-tools:
-        condition: service_started
+      temporal-auto-setup:
+        condition: service_completed_successfully
     environment:
       - SERVICES=history
       - LOG_LEVEL=info
       - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
@@ -177,12 +175,13 @@ services:
     image: temporalio/server:1.24.2
     container_name: temporal-history-2
     depends_on:
-      temporal-admin-tools:
-        condition: service_started
+      temporal-auto-setup:
+        condition: service_completed_successfully
     environment:
       - SERVICES=history
       - LOG_LEVEL=info
       - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
@@ -210,12 +209,13 @@ services:
     image: temporalio/server:1.24.2
     container_name: temporal-history-3
     depends_on:
-      temporal-admin-tools:
-        condition: service_started
+      temporal-auto-setup:
+        condition: service_completed_successfully
     environment:
       - SERVICES=history
       - LOG_LEVEL=info
       - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
@@ -243,12 +243,13 @@ services:
     image: temporalio/server:1.24.2
     container_name: temporal-history-4
     depends_on:
-      temporal-admin-tools:
-        condition: service_started
+      temporal-auto-setup:
+        condition: service_completed_successfully
     environment:
       - SERVICES=history
       - LOG_LEVEL=info
       - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
@@ -277,12 +278,13 @@ services:
     image: temporalio/server:1.24.2
     container_name: temporal-matching-1
     depends_on:
-      temporal-admin-tools:
-        condition: service_started
+      temporal-auto-setup:
+        condition: service_completed_successfully
     environment:
       - SERVICES=matching
       - LOG_LEVEL=info
       - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
@@ -310,12 +312,13 @@ services:
     image: temporalio/server:1.24.2
     container_name: temporal-matching-2
     depends_on:
-      temporal-admin-tools:
-        condition: service_started
+      temporal-auto-setup:
+        condition: service_completed_successfully
     environment:
       - SERVICES=matching
       - LOG_LEVEL=info
       - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
@@ -343,12 +346,13 @@ services:
     image: temporalio/server:1.24.2
     container_name: temporal-matching-3
     depends_on:
-      temporal-admin-tools:
-        condition: service_started
+      temporal-auto-setup:
+        condition: service_completed_successfully
     environment:
       - SERVICES=matching
       - LOG_LEVEL=info
       - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
@@ -377,12 +381,13 @@ services:
     image: temporalio/server:1.24.2
     container_name: temporal-worker-1
     depends_on:
-      temporal-admin-tools:
-        condition: service_started
+      temporal-auto-setup:
+        condition: service_completed_successfully
     environment:
       - SERVICES=worker
       - LOG_LEVEL=info
       - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
@@ -410,12 +415,13 @@ services:
     image: temporalio/server:1.24.2
     container_name: temporal-worker-2
     depends_on:
-      temporal-admin-tools:
-        condition: service_started
+      temporal-auto-setup:
+        condition: service_completed_successfully
     environment:
       - SERVICES=worker
       - LOG_LEVEL=info
       - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
