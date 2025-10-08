@@ -1,4 +1,4 @@
-# config/config.yaml
+# config/development.yaml
 log:
   stdout: true
   level: info
@@ -13,10 +13,6 @@ persistence:
         hosts: "cassandra"
         port: 9042
         keyspace: "temporal"
-        consistency:
-          default:
-            consistency: "LOCAL_QUORUM"
-            serialConsistency: "LOCAL_SERIAL"
         maxConns: 20
         connectTimeout: 10s
     visibility:
@@ -24,17 +20,12 @@ persistence:
         hosts: "cassandra"
         port: 9042
         keyspace: "temporal_visibility"
-        consistency:
-          default:
-            consistency: "LOCAL_QUORUM"
-            serialConsistency: "LOCAL_SERIAL"
         maxConns: 10
         connectTimeout: 10s
 
 global:
   membership:
     maxJoinDuration: 30s
-    broadcastAddress: "127.0.0.1"
   pprof:
     port: 7936
 
@@ -43,28 +34,24 @@ services:
     rpc:
       grpcPort: 7233
       membershipPort: 6933
-      bindOnLocalHost: false
       bindOnIP: "0.0.0.0"
 
   matching:
     rpc:
       grpcPort: 7235
       membershipPort: 6935
-      bindOnLocalHost: false
       bindOnIP: "0.0.0.0"
 
   history:
     rpc:
       grpcPort: 7234
       membershipPort: 6934
-      bindOnLocalHost: false
       bindOnIP: "0.0.0.0"
 
   worker:
     rpc:
       grpcPort: 7239
       membershipPort: 6939
-      bindOnLocalHost: false
       bindOnIP: "0.0.0.0"
 
 clusterMetadata:
@@ -77,7 +64,7 @@ clusterMetadata:
       enabled: true
       initialFailoverVersion: 1
       rpcName: "frontend"
-      rpcAddress: "127.0.0.1:7233"
+      rpcAddress: "localhost:7233"
 
 dcRedirectionPolicy:
   policy: "noop"
@@ -96,4 +83,4 @@ namespaceDefaults:
       state: "disabled"
 
 publicClient:
-  hostPort: "127.0.0.1:7233"
+  hostPort: "localhost:7233"

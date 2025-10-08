@@ -87,7 +87,8 @@ services:
       - VISIBILITY_KEYSPACE=temporal_visibility
       - SKIP_SCHEMA_SETUP=true
       - SKIP_DEFAULT_NAMESPACE_CREATION=false
-      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
+      - TEMPORAL_CONFIG_FILE=/etc/temporal/config/development.yaml
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/docker.yaml
       - SERVICES=frontend
       - NUM_HISTORY_SHARDS=1024
       - BIND_ON_IP=0.0.0.0
@@ -98,6 +99,7 @@ services:
     networks:
       - temporal-network
     volumes:
+      - ./config:/etc/temporal/config
       - ./dynamicconfig:/etc/temporal/config/dynamicconfig
     deploy:
       resources:
@@ -123,7 +125,8 @@ services:
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
       - SKIP_SCHEMA_SETUP=true
-      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
+      - TEMPORAL_CONFIG_FILE=/etc/temporal/config/development.yaml
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/docker.yaml
       - SERVICES=history
       - NUM_HISTORY_SHARDS=1024
       - BIND_ON_IP=0.0.0.0
@@ -133,6 +136,7 @@ services:
     networks:
       - temporal-network
     volumes:
+      - ./config:/etc/temporal/config
       - ./dynamicconfig:/etc/temporal/config/dynamicconfig
     deploy:
       resources:
@@ -157,7 +161,8 @@ services:
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
       - SKIP_SCHEMA_SETUP=true
-      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
+      - TEMPORAL_CONFIG_FILE=/etc/temporal/config/development.yaml
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/docker.yaml
       - SERVICES=history
       - NUM_HISTORY_SHARDS=1024
       - BIND_ON_IP=0.0.0.0
@@ -167,6 +172,7 @@ services:
     networks:
       - temporal-network
     volumes:
+      - ./config:/etc/temporal/config
       - ./dynamicconfig:/etc/temporal/config/dynamicconfig
     deploy:
       resources:
@@ -191,7 +197,8 @@ services:
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
       - SKIP_SCHEMA_SETUP=true
-      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
+      - TEMPORAL_CONFIG_FILE=/etc/temporal/config/development.yaml
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/docker.yaml
       - SERVICES=history
       - NUM_HISTORY_SHARDS=1024
       - BIND_ON_IP=0.0.0.0
@@ -201,6 +208,7 @@ services:
     networks:
       - temporal-network
     volumes:
+      - ./config:/etc/temporal/config
       - ./dynamicconfig:/etc/temporal/config/dynamicconfig
     deploy:
       resources:
