@@ -100,7 +100,7 @@ services:
 
   # Frontend Service - Client API gateway
   temporal-frontend:
-    image: temporalio/server:1.24.2
+    image: temporalio/server:1.26.2
     container_name: temporal-frontend
     depends_on:
       temporal-auto-setup:
@@ -147,7 +147,7 @@ services:
 
   # History Service - Core workflow execution (scaled to 4 instances)
   temporal-history-1:
-    image: temporalio/server:1.24.2
+    image: temporalio/server:1.26.2
     container_name: temporal-history-1
     depends_on:
       temporal-auto-setup:
@@ -186,7 +186,7 @@ services:
       - temporal-network
 
   temporal-history-2:
-    image: temporalio/server:1.24.2
+    image: temporalio/server:1.26.2
     container_name: temporal-history-2
     depends_on:
       temporal-auto-setup:
@@ -225,7 +225,7 @@ services:
       - temporal-network
 
   temporal-history-3:
-    image: temporalio/server:1.24.2
+    image: temporalio/server:1.26.2
     container_name: temporal-history-3
     depends_on:
       temporal-auto-setup:
@@ -264,7 +264,7 @@ services:
       - temporal-network
 
   temporal-history-4:
-    image: temporalio/server:1.24.2
+    image: temporalio/server:1.26.2
     container_name: temporal-history-4
     depends_on:
       temporal-auto-setup:
@@ -304,7 +304,7 @@ services:
 
   # Matching Service - Task queue management (scaled to 3 instances)
   temporal-matching-1:
-    image: temporalio/server:1.24.2
+    image: temporalio/server:1.26.2
     container_name: temporal-matching-1
     depends_on:
       temporal-auto-setup:
@@ -343,7 +343,7 @@ services:
       - temporal-network
 
   temporal-matching-2:
-    image: temporalio/server:1.24.2
+    image: temporalio/server:1.26.2
     container_name: temporal-matching-2
     depends_on:
       temporal-auto-setup:
@@ -382,7 +382,7 @@ services:
       - temporal-network
 
   temporal-matching-3:
-    image: temporalio/server:1.24.2
+    image: temporalio/server:1.26.2
     container_name: temporal-matching-3
     depends_on:
       temporal-auto-setup:
@@ -422,7 +422,7 @@ services:
 
   # Worker Service - Internal workflows (scaled to 2 instances)
   temporal-worker-1:
-    image: temporalio/server:1.24.2
+    image: temporalio/server:1.26.2
     container_name: temporal-worker-1
     depends_on:
       temporal-auto-setup:
@@ -461,7 +461,7 @@ services:
       - temporal-network
 
   temporal-worker-2:
-    image: temporalio/server:1.24.2
+    image: temporalio/server:1.26.2
     container_name: temporal-worker-2
     depends_on:
       temporal-auto-setup:
