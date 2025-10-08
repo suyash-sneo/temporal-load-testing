@@ -87,7 +87,7 @@ services:
       - VISIBILITY_KEYSPACE=temporal_visibility
       - SKIP_SCHEMA_SETUP=true
       - SKIP_DEFAULT_NAMESPACE_CREATION=false
-      - TEMPORAL_CONFIG_FILE=/etc/temporal/config/development.yaml
+      - TEMPORAL_CONFIG_FILE=/etc/temporal/config/config_template.yaml
       - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/docker.yaml
       - SERVICES=frontend
       - NUM_HISTORY_SHARDS=1024
@@ -125,7 +125,7 @@ services:
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
       - SKIP_SCHEMA_SETUP=true
-      - TEMPORAL_CONFIG_FILE=/etc/temporal/config/development.yaml
+      - TEMPORAL_CONFIG_FILE=/etc/temporal/config/config_template.yaml
       - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/docker.yaml
       - SERVICES=history
       - NUM_HISTORY_SHARDS=1024
@@ -161,7 +161,7 @@ services:
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
       - SKIP_SCHEMA_SETUP=true
-      - TEMPORAL_CONFIG_FILE=/etc/temporal/config/development.yaml
+      - TEMPORAL_CONFIG_FILE=/etc/temporal/config/config_template.yaml
       - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/docker.yaml
       - SERVICES=history
       - NUM_HISTORY_SHARDS=1024
@@ -197,7 +197,7 @@ services:
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
       - SKIP_SCHEMA_SETUP=true
-      - TEMPORAL_CONFIG_FILE=/etc/temporal/config/development.yaml
+      - TEMPORAL_CONFIG_FILE=/etc/temporal/config/config_template.yaml
       - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/docker.yaml
       - SERVICES=history
       - NUM_HISTORY_SHARDS=1024
