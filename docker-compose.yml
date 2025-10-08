@@ -11,16 +11,13 @@ services:
       - CASSANDRA_CLUSTER_NAME=temporal-cluster
       - CASSANDRA_DC=dc1
       - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
-      - MAX_HEAP_SIZE=8G
-      - HEAP_NEWSIZE=2G
       - CASSANDRA_NUM_TOKENS=256
-      - JVM_OPTS=-Xms8G -Xmx8G -XX:+UseG1GC
     volumes:
       - cassandra-data:/var/lib/cassandra
     networks:
       - temporal-network
     healthcheck:
-      test: ["CMD-SHELL", "cqlsh -e 'describe cluster'"]
+      test: ["CMD-SHELL", "[ $(nodetool statusgossip) = running ]"]
       interval: 30s
       timeout: 10s
       retries: 10
