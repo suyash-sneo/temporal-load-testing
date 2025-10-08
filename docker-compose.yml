@@ -11,26 +11,20 @@ services:
       - CASSANDRA_CLUSTER_NAME=temporal-cluster
       - CASSANDRA_DC=dc1
       - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
-      - MAX_HEAP_SIZE=16G
-      - HEAP_NEWSIZE=4G
+      - MAX_HEAP_SIZE=8G
+      - HEAP_NEWSIZE=2G
       - CASSANDRA_NUM_TOKENS=256
+      - JVM_OPTS=-Xms8G -Xmx8G -XX:+UseG1GC
     volumes:
       - cassandra-data:/var/lib/cassandra
     networks:
       - temporal-network
-    deploy:
-      resources:
-        limits:
-          cpus: '8'
-          memory: 20G
-        reservations:
-          cpus: '6'
-          memory: 18G
     healthcheck:
       test: ["CMD-SHELL", "cqlsh -e 'describe cluster'"]
       interval: 30s
       timeout: 10s
-      retries: 5
+      retries: 10
+      start_period: 120s
 
   # Temporal Admin Tools (for setup)
   temporal-admin-tools:
@@ -51,21 +45,35 @@ services:
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
-        # Wait for Cassandra to be ready
-        sleep 30
+        # Wait for Cassandra to be fully ready
+        echo "Waiting for Cassandra to be ready..."
+        sleep 60
         
         # Setup Cassandra schema
+        echo "Creating temporal keyspace..."
         temporal-cassandra-tool --ep cassandra create -k temporal --rf 1
+        
+        echo "Setting up temporal schema..."
         temporal-cassandra-tool --ep cassandra -k temporal setup-schema -v 0.0
+        
+        echo "Updating temporal schema..."
         temporal-cassandra-tool --ep cassandra -k temporal update-schema -d /etc/temporal/schema/cassandra/temporal/versioned
         
         # Setup visibility schema
+        echo "Creating temporal_visibility keyspace..."
         temporal-cassandra-tool --ep cassandra create -k temporal_visibility --rf 1
+        
+        echo "Setting up visibility schema..."
         temporal-cassandra-tool --ep cassandra -k temporal_visibility setup-schema -v 0.0
+        
+        echo "Updating visibility schema..."
         temporal-cassandra-tool --ep cassandra -k temporal_visibility update-schema -d /etc/temporal/schema/cassandra/visibility/versioned
         
-        echo "Cassandra setup complete"
+        echo "=========================================="
+        echo "Cassandra setup complete!"
+        echo "=========================================="
         tail -f /dev/null
+    restart: on-failure
 
   # Frontend Service - Handles gRPC API requests
   temporal-frontend:
@@ -76,16 +84,17 @@ services:
       - temporal-admin-tools
     environment:
       - DB=cassandra
+      - DB_PORT=9042
       - CASSANDRA_SEEDS=cassandra
-      - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - SKIP_SCHEMA_SETUP=true
+      - SKIP_DEFAULT_NAMESPACE_CREATION=false
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
       - SERVICES=frontend
       - NUM_HISTORY_SHARDS=1024
       - BIND_ON_IP=0.0.0.0
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
-      - TEMPORAL_BROADCAST_ADDRESS=temporal-frontend
     ports:
       - "7233:7233"
       - "9091:9090"
@@ -112,16 +121,16 @@ services:
       - temporal-admin-tools
     environment:
       - DB=cassandra
+      - DB_PORT=9042
       - CASSANDRA_SEEDS=cassandra
-      - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - SKIP_SCHEMA_SETUP=true
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
       - SERVICES=history
       - NUM_HISTORY_SHARDS=1024
       - BIND_ON_IP=0.0.0.0
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
-      - TEMPORAL_BROADCAST_ADDRESS=temporal-history-1
     ports:
       - "9092:9090"
     networks:
@@ -146,16 +155,16 @@ services:
       - temporal-admin-tools
     environment:
       - DB=cassandra
+      - DB_PORT=9042
       - CASSANDRA_SEEDS=cassandra
-      - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - SKIP_SCHEMA_SETUP=true
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
       - SERVICES=history
       - NUM_HISTORY_SHARDS=1024
       - BIND_ON_IP=0.0.0.0
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
-      - TEMPORAL_BROADCAST_ADDRESS=temporal-history-2
     ports:
       - "9093:9090"
     networks:
@@ -180,16 +189,16 @@ services:
       - temporal-admin-tools
     environment:
       - DB=cassandra
+      - DB_PORT=9042
       - CASSANDRA_SEEDS=cassandra
-      - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - SKIP_SCHEMA_SETUP=true
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
       - SERVICES=history
       - NUM_HISTORY_SHARDS=1024
       - BIND_ON_IP=0.0.0.0
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
-      - TEMPORAL_BROADCAST_ADDRESS=temporal-history-3
     ports:
       - "9094:9090"
     networks:
@@ -215,16 +224,16 @@ services:
       - temporal-admin-tools
     environment:
       - DB=cassandra
+      - DB_PORT=9042
       - CASSANDRA_SEEDS=cassandra
-      - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - SKIP_SCHEMA_SETUP=true
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
       - SERVICES=matching
       - NUM_HISTORY_SHARDS=1024
       - BIND_ON_IP=0.0.0.0
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
-      - TEMPORAL_BROADCAST_ADDRESS=temporal-matching-1
     ports:
       - "9095:9090"
     networks:
@@ -249,16 +258,16 @@ services:
       - temporal-admin-tools
     environment:
       - DB=cassandra
+      - DB_PORT=9042
       - CASSANDRA_SEEDS=cassandra
-      - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - SKIP_SCHEMA_SETUP=true
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
       - SERVICES=matching
       - NUM_HISTORY_SHARDS=1024
       - BIND_ON_IP=0.0.0.0
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
-      - TEMPORAL_BROADCAST_ADDRESS=temporal-matching-2
     ports:
       - "9096:9090"
     networks:
@@ -284,16 +293,16 @@ services:
       - temporal-admin-tools
     environment:
       - DB=cassandra
+      - DB_PORT=9042
       - CASSANDRA_SEEDS=cassandra
-      - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - SKIP_SCHEMA_SETUP=true
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/docker.yaml
       - SERVICES=worker
       - NUM_HISTORY_SHARDS=1024
       - BIND_ON_IP=0.0.0.0
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
-      - TEMPORAL_BROADCAST_ADDRESS=temporal-worker
     ports:
       - "9097:9090"
     networks:
