@@ -120,7 +120,7 @@ services:
       - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
-      - ES_VERSION=v8
+      - ES_VERSION=v7
       - ES_SCHEME=http
       - ES_VIS_INDEX=temporal_visibility_v1_dev
       - ENABLE_ES=true
@@ -165,7 +165,7 @@ services:
       - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
-      - ES_VERSION=v8
+      - ES_VERSION=v7
       - ES_SCHEME=http
       - ES_VIS_INDEX=temporal_visibility_v1_dev
       - ENABLE_ES=true
@@ -204,7 +204,7 @@ services:
       - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
-      - ES_VERSION=v8
+      - ES_VERSION=v7
       - ES_SCHEME=http
       - ES_VIS_INDEX=temporal_visibility_v1_dev
       - ENABLE_ES=true
@@ -243,7 +243,7 @@ services:
       - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
-      - ES_VERSION=v8
+      - ES_VERSION=v7
       - ES_SCHEME=http
       - ES_VIS_INDEX=temporal_visibility_v1_dev
       - ENABLE_ES=true
@@ -282,7 +282,7 @@ services:
       - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
-      - ES_VERSION=v8
+      - ES_VERSION=v7
       - ES_SCHEME=http
       - ES_VIS_INDEX=temporal_visibility_v1_dev
       - ENABLE_ES=true
@@ -322,7 +322,7 @@ services:
       - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
-      - ES_VERSION=v8
+      - ES_VERSION=v7
       - ES_SCHEME=http
       - ES_VIS_INDEX=temporal_visibility_v1_dev
       - ENABLE_ES=true
@@ -361,7 +361,7 @@ services:
       - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
-      - ES_VERSION=v8
+      - ES_VERSION=v7
       - ES_SCHEME=http
       - ES_VIS_INDEX=temporal_visibility_v1_dev
       - ENABLE_ES=true
@@ -400,7 +400,7 @@ services:
       - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
-      - ES_VERSION=v8
+      - ES_VERSION=v7
       - ES_SCHEME=http
       - ES_VIS_INDEX=temporal_visibility_v1_dev
       - ENABLE_ES=true
@@ -440,7 +440,7 @@ services:
       - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
-      - ES_VERSION=v8
+      - ES_VERSION=v7
       - ES_SCHEME=http
       - ES_VIS_INDEX=temporal_visibility_v1_dev
       - ENABLE_ES=true
@@ -479,7 +479,7 @@ services:
       - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
-      - ES_VERSION=v8
+      - ES_VERSION=v7
       - ES_SCHEME=http
       - ES_VIS_INDEX=temporal_visibility_v1_dev
       - ENABLE_ES=true
