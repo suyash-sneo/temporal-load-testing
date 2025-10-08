@@ -89,7 +89,10 @@ services:
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
       - ES_VERSION=v8
+      - ES_SCHEME=http
+      - ES_VIS_INDEX=temporal_visibility_v1_dev
       - NUM_HISTORY_SHARDS=4096
+      - ENABLE_ES=true
     networks:
       - temporal-network
 
@@ -102,24 +105,28 @@ services:
         condition: service_completed_successfully
     ports:
       - "7233:7233"
-      - "7234:7234"
     environment:
       - SERVICES=frontend
       - LOG_LEVEL=info
-      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/dynamic_config.yaml
       - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - DBNAME=default
+      - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
       - ES_VERSION=v8
+      - ES_SCHEME=http
+      - ES_VIS_INDEX=temporal_visibility_v1_dev
+      - ENABLE_ES=true
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
       - NUM_HISTORY_SHARDS=4096
       - TEMPORAL_BROADCAST_ADDRESS=temporal-frontend
     volumes:
-      - ./dynamic_config.yaml:/etc/temporal/config/dynamic_config.yaml
+      - ./dynamic_config.yaml:/etc/temporal/config/dynamicconfig/dynamic_config.yaml
     deploy:
       resources:
         limits:
@@ -146,20 +153,25 @@ services:
     environment:
       - SERVICES=history
       - LOG_LEVEL=info
-      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/dynamic_config.yaml
       - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - DBNAME=default
+      - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
       - ES_VERSION=v8
+      - ES_SCHEME=http
+      - ES_VIS_INDEX=temporal_visibility_v1_dev
+      - ENABLE_ES=true
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
       - NUM_HISTORY_SHARDS=4096
       - TEMPORAL_BROADCAST_ADDRESS=temporal-history-1
     volumes:
-      - ./dynamic_config.yaml:/etc/temporal/config/dynamic_config.yaml
+      - ./dynamic_config.yaml:/etc/temporal/config/dynamicconfig/dynamic_config.yaml
     deploy:
       resources:
         limits:
@@ -180,20 +192,25 @@ services:
     environment:
       - SERVICES=history
       - LOG_LEVEL=info
-      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/dynamic_config.yaml
       - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - DBNAME=default
+      - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
       - ES_VERSION=v8
+      - ES_SCHEME=http
+      - ES_VIS_INDEX=temporal_visibility_v1_dev
+      - ENABLE_ES=true
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
       - NUM_HISTORY_SHARDS=4096
       - TEMPORAL_BROADCAST_ADDRESS=temporal-history-2
     volumes:
-      - ./dynamic_config.yaml:/etc/temporal/config/dynamic_config.yaml
+      - ./dynamic_config.yaml:/etc/temporal/config/dynamicconfig/dynamic_config.yaml
     deploy:
       resources:
         limits:
@@ -214,20 +231,25 @@ services:
     environment:
       - SERVICES=history
       - LOG_LEVEL=info
-      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/dynamic_config.yaml
       - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - DBNAME=default
+      - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
       - ES_VERSION=v8
+      - ES_SCHEME=http
+      - ES_VIS_INDEX=temporal_visibility_v1_dev
+      - ENABLE_ES=true
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
       - NUM_HISTORY_SHARDS=4096
       - TEMPORAL_BROADCAST_ADDRESS=temporal-history-3
     volumes:
-      - ./dynamic_config.yaml:/etc/temporal/config/dynamic_config.yaml
+      - ./dynamic_config.yaml:/etc/temporal/config/dynamicconfig/dynamic_config.yaml
     deploy:
       resources:
         limits:
@@ -248,20 +270,25 @@ services:
     environment:
       - SERVICES=history
       - LOG_LEVEL=info
-      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/dynamic_config.yaml
       - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - DBNAME=default
+      - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
       - ES_VERSION=v8
+      - ES_SCHEME=http
+      - ES_VIS_INDEX=temporal_visibility_v1_dev
+      - ENABLE_ES=true
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
       - NUM_HISTORY_SHARDS=4096
       - TEMPORAL_BROADCAST_ADDRESS=temporal-history-4
     volumes:
-      - ./dynamic_config.yaml:/etc/temporal/config/dynamic_config.yaml
+      - ./dynamic_config.yaml:/etc/temporal/config/dynamicconfig/dynamic_config.yaml
     deploy:
       resources:
         limits:
@@ -283,20 +310,25 @@ services:
     environment:
       - SERVICES=matching
       - LOG_LEVEL=info
-      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/dynamic_config.yaml
       - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - DBNAME=default
+      - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
       - ES_VERSION=v8
+      - ES_SCHEME=http
+      - ES_VIS_INDEX=temporal_visibility_v1_dev
+      - ENABLE_ES=true
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
       - NUM_HISTORY_SHARDS=4096
       - TEMPORAL_BROADCAST_ADDRESS=temporal-matching-1
     volumes:
-      - ./dynamic_config.yaml:/etc/temporal/config/dynamic_config.yaml
+      - ./dynamic_config.yaml:/etc/temporal/config/dynamicconfig/dynamic_config.yaml
     deploy:
       resources:
         limits:
@@ -317,20 +349,25 @@ services:
     environment:
       - SERVICES=matching
       - LOG_LEVEL=info
-      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/dynamic_config.yaml
       - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - DBNAME=default
+      - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
       - ES_VERSION=v8
+      - ES_SCHEME=http
+      - ES_VIS_INDEX=temporal_visibility_v1_dev
+      - ENABLE_ES=true
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
       - NUM_HISTORY_SHARDS=4096
       - TEMPORAL_BROADCAST_ADDRESS=temporal-matching-2
     volumes:
-      - ./dynamic_config.yaml:/etc/temporal/config/dynamic_config.yaml
+      - ./dynamic_config.yaml:/etc/temporal/config/dynamicconfig/dynamic_config.yaml
     deploy:
       resources:
         limits:
@@ -351,20 +388,25 @@ services:
     environment:
       - SERVICES=matching
       - LOG_LEVEL=info
-      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/dynamic_config.yaml
       - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - DBNAME=default
+      - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
       - ES_VERSION=v8
+      - ES_SCHEME=http
+      - ES_VIS_INDEX=temporal_visibility_v1_dev
+      - ENABLE_ES=true
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
       - NUM_HISTORY_SHARDS=4096
       - TEMPORAL_BROADCAST_ADDRESS=temporal-matching-3
     volumes:
-      - ./dynamic_config.yaml:/etc/temporal/config/dynamic_config.yaml
+      - ./dynamic_config.yaml:/etc/temporal/config/dynamicconfig/dynamic_config.yaml
     deploy:
       resources:
         limits:
@@ -386,20 +428,25 @@ services:
     environment:
       - SERVICES=worker
       - LOG_LEVEL=info
-      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/dynamic_config.yaml
       - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - DBNAME=default
+      - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
       - ES_VERSION=v8
+      - ES_SCHEME=http
+      - ES_VIS_INDEX=temporal_visibility_v1_dev
+      - ENABLE_ES=true
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
       - NUM_HISTORY_SHARDS=4096
       - TEMPORAL_BROADCAST_ADDRESS=temporal-worker-1
     volumes:
-      - ./dynamic_config.yaml:/etc/temporal/config/dynamic_config.yaml
+      - ./dynamic_config.yaml:/etc/temporal/config/dynamicconfig/dynamic_config.yaml
     deploy:
       resources:
         limits:
@@ -420,20 +467,25 @@ services:
     environment:
       - SERVICES=worker
       - LOG_LEVEL=info
-      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamic_config.yaml
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/dynamic_config.yaml
       - DB=cassandra
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_PORT=9042
       - KEYSPACE=temporal
       - VISIBILITY_KEYSPACE=temporal_visibility
+      - DBNAME=default
+      - VISIBILITY_DBNAME=visibility
       - ES_SEEDS=elasticsearch
       - ES_PORT=9200
       - ES_VERSION=v8
+      - ES_SCHEME=http
+      - ES_VIS_INDEX=temporal_visibility_v1_dev
+      - ENABLE_ES=true
       - PROMETHEUS_ENDPOINT=0.0.0.0:9090
       - NUM_HISTORY_SHARDS=4096
       - TEMPORAL_BROADCAST_ADDRESS=temporal-worker-2
     volumes:
-      - ./dynamic_config.yaml:/etc/temporal/config/dynamic_config.yaml
+      - ./dynamic_config.yaml:/etc/temporal/config/dynamicconfig/dynamic_config.yaml
     deploy:
       resources:
         limits:
@@ -483,7 +535,7 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./grafana/provisioning/datasources/prometheus.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
     depends_on:
       - prometheus
     deploy:

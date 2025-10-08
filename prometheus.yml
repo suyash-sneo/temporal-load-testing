@@ -1,13 +1,48 @@
-# grafana/provisioning/datasources/prometheus.yml
-apiVersion: 1
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+  external_labels:
+    cluster: 'temporal-high-throughput'
 
-datasources:
-  - name: Prometheus
-    type: prometheus
-    access: proxy
-    url: http://prometheus:9090
-    isDefault: true
-    editable: true
-    jsonData:
-      timeInterval: "5s"
-      queryTimeout: "60s"
+scrape_configs:
+  # Frontend Service
+  - job_name: 'temporal-frontend'
+    static_configs:
+      - targets: ['temporal-frontend:9090']
+        labels:
+          service: 'frontend'
+
+  # History Services
+  - job_name: 'temporal-history'
+    static_configs:
+      - targets: 
+          - 'temporal-history-1:9090'
+          - 'temporal-history-2:9090'
+          - 'temporal-history-3:9090'
+          - 'temporal-history-4:9090'
+        labels:
+          service: 'history'
+
+  # Matching Services
+  - job_name: 'temporal-matching'
+    static_configs:
+      - targets:
+          - 'temporal-matching-1:9090'
+          - 'temporal-matching-2:9090'
+          - 'temporal-matching-3:9090'
+        labels:
+          service: 'matching'
+
+  # Worker Services
+  - job_name: 'temporal-worker'
+    static_configs:
+      - targets:
+          - 'temporal-worker-1:9090'
+          - 'temporal-worker-2:9090'
+        labels:
+          service: 'worker'
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
